@@ -1,0 +1,78 @@
+#include <iostream> 
+#include <string> 
+#include <sstream> // to read commas and the percentage signs
+#include <cmath> // to use exponents 
+#include <algorithm> // to format with commas
+
+using namespace std; 
+
+double parseAmount(string input) { // this is to read commas 
+    string noCommas = "";
+    for (char c : input) {
+    if (c != ',') noCommas += c; }
+    stringstream ss(noCommas); 
+    double value;
+    ss >> value;
+    return value; }
+
+double parsePercent(string input) { // this is to read percentage signs
+    if (!input.empty() && input.back() == '%') input.pop_back();
+    return stod(input); }
+    
+std::string formatWithCommas(int number) { // to format with commas
+    std::string numStr = std::to_string(number);
+    int insertPosition = numStr.length() - 3;
+    while (insertPosition > 0) {
+        numStr.insert(insertPosition, ",");
+        insertPosition -= 3; }
+    return numStr; }
+    
+int main() {
+// variables 
+    string name;
+    cout.imbue(locale(""));
+    double apr; 
+    int n; 
+    double apy, apy2; 
+    double deposit; 
+    double percent; 
+    double finalAmount; 
+    double years; 
+    
+// output
+cout << "Welcome to the APY (Annual Percentage Yield) calculator! \nWhat is your first name?: ";  
+cin >> name; 
+cout << endl; 
+    
+cout << "Hello, " << name << "!\nWhat is your deposit amount?: $"; 
+    string depositInput;
+    cin >> depositInput;
+    deposit = parseAmount(depositInput); // code to read commas 
+    cout << endl;
+
+cout << "What is your Annual Percent Rate (APR) in percent form?: ";
+    string aprInput;
+    cin >> aprInput;
+    apr = parsePercent(aprInput); // code to read percentage signs
+    cout << endl; 
+    
+cout << "How many years is your term for?: "; 
+cin >> years; 
+cout << endl; 
+
+cout << "How many times a year is the interested being compunded? (Daily = 365, Weekly = 52, Bi-weekly = 26, Monthly = 12, Quarterly = 4, Bi-yearly = 2, Yearly = 1): "; 
+cin >> n; 
+cout << endl; 
+
+// equations 
+percent = apr / 100; 
+apy = pow((1 + percent / n), n) - 1;  
+finalAmount = deposit * pow((1 + apy / n),n *years); 
+apy2 = apy * 100; 
+
+cout << name << ", your APY is " << apy2 << "!" << endl;
+cout.imbue(locale("")); // enables comma formatting for numbers
+cout << "And your final deposit is $" << formatWithCommas(finalAmount) << "!" << endl;
+
+return 0; 
+}
